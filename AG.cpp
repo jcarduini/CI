@@ -39,7 +39,7 @@ void imprimePopulacao(){
 	for (i = 0; i < tamPopulacao; i++){
 		for (j = 0; j < tamIndividuo; j++)
 		  	std::cout<<populacao[i][j];	
-		std::cout<<"| "<<populacao[i][tamIndividuo]<<"\n";
+		std::cout<<"| "<<populacao[i][tamIndividuo]<<" | Ac.: "<<populacao[i][tamIndividuo+1]<<"\n";
 	}
 }
 
