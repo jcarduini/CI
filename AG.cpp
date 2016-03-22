@@ -4,13 +4,14 @@
 **/
 
 #define tamIndividuo 10	// solução
-#define tamPopulacao 100	// quantidade de indivíduos
+#define tamPopulacao 100// quantidade de indivíduos
 #define taxaGeracao 50	// porcentagem de filhos gerados (em relação a população)
 #define taxaMutacao 5	// porcentagem de filhos mutantes (em relação aos filhos)
-#define tour 3	// quantidade de indivíduos selecionados no torneio
+#define tour 3		// quantidade de indivíduos selecionados no torneio
 
-#include<iostream> 	//std::cout
-#include<algorithm> 	//std::shuffle
+#include<iostream> 	// std::cout
+#include<algorithm> 	// std::shuffle
+#include<cmath> 	// std::pow, std::abs
 
 /** matriz de população 
  * linhas: população inicial + seus filhos
@@ -22,15 +23,17 @@ int populacao[tamPopulacao+(tamPopulacao*taxaGeracao/100)][tamIndividuo+2];
 void aptidao(){
 	int i;
 	for (i = 0; i < tamPopulacao; i++)
-		populacao[i][tamIndividuo + 1] = (populacao[i][0]+populacao[i][*10^3 + populacao[i][1]*10^2 + populacao[i][2]*10^1 + populacao[i][3]) 
-
+//		populacao[i][tamIndividuo] = ((populacao[i][0]+populacao[i][4])*(std::pow(10,3)));
+//		populacao[i][tamIndividuo] = i;
+		populacao[i][tamIndividuo] = (std::pow(10,5) - abs(( (populacao[i][0]+populacao[i][4])*(std::pow(10,3)) + (populacao[i][1]+populacao[i][5])*(std::pow(10,2)) + (populacao[i][2]+populacao[i][6])*10 + populacao[i][3]+populacao[i][1] ) - ( populacao[i][4]*(std::pow(10,4)) + populacao[i][5]*(std::pow(10,3)) + populacao[i][2]*(pow(10,2)) + populacao[i][1]*10 + populacao[i][7]))); 
+}
 
 void imprimePopulacao(){
 	int i, j;
 	for (i = 0; i < tamPopulacao; i++){
 		for (j = 0; j < tamIndividuo; j++)
 		  	std::cout<<populacao[i][j];	
-		std::cout<<"\n";
+		std::cout<<"| "<<populacao[i][tamIndividuo]<<"\n";
 	}
 }
 
@@ -48,5 +51,6 @@ void geraPopulacao(){
 main(){
   srand((unsigned)time(NULL));  
   geraPopulacao();
+	aptidao();
 	imprimePopulacao();
 }
