@@ -21,11 +21,17 @@ int populacao[tamPopulacao+(tamPopulacao*taxaGeracao/100)][tamIndividuo+2];
 
 
 void aptidao(){
-	int i;
-	for (i = 0; i < tamPopulacao; i++)
-//		populacao[i][tamIndividuo] = ((populacao[i][0]+populacao[i][4])*(std::pow(10,3)));
-//		populacao[i][tamIndividuo] = i;
+	int i = 0;
+	/* calcula valor de aptidão do primeiro individuo */
+	populacao[i][tamIndividuo] = (std::pow(10,5) - abs(( (populacao[i][0]+populacao[i][4])*(std::pow(10,3)) + (populacao[i][1]+populacao[i][5])*(std::pow(10,2)) + (populacao[i][2]+populacao[i][6])*10 + populacao[i][3]+populacao[i][1] ) - ( populacao[i][4]*(std::pow(10,4)) + populacao[i][5]*(std::pow(10,3)) + populacao[i][2]*(pow(10,2)) + populacao[i][1]*10 + populacao[i][7])));
+	/* seta aptidao acumulada do primeiro individuo */
+	populacao[i][tamIndividuo + 1] = populacao[i][tamIndividuo];
+	
+	/* calcula aptidão e aptidão acumulada para os demais individuos */
+	for (i = 1; i < tamPopulacao; i++){
 		populacao[i][tamIndividuo] = (std::pow(10,5) - abs(( (populacao[i][0]+populacao[i][4])*(std::pow(10,3)) + (populacao[i][1]+populacao[i][5])*(std::pow(10,2)) + (populacao[i][2]+populacao[i][6])*10 + populacao[i][3]+populacao[i][1] ) - ( populacao[i][4]*(std::pow(10,4)) + populacao[i][5]*(std::pow(10,3)) + populacao[i][2]*(pow(10,2)) + populacao[i][1]*10 + populacao[i][7]))); 
+		populacao[i][tamIndividuo + 1] = populacao[i-1][tamIndividuo+1] + populacao[i][tamIndividuo];
+	}
 }
 
 void imprimePopulacao(){
