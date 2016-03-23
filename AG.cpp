@@ -5,7 +5,8 @@
 
 #define tamIndividuo 10	// solução
 #define tamPopulacao 100// quantidade de indivíduos
-#define taxaGeracao 50	// porcentagem de filhos gerados (em relação a população)
+#define nGeracao 50 	// nnumero de vezes que haverá uma nova geracao
+#define taxaCross 60	// porcentagem de filhos gerados (em relação a população)
 #define taxaMutacao 5	// porcentagem de filhos mutantes (em relação aos filhos)
 #define tour 3		// quantidade de indivíduos selecionados no torneio
 
@@ -18,6 +19,25 @@
  * colunas: tamIndividuo + função de aptidão + função de aptidão acumulada
  **/
 int populacao[tamPopulacao+(tamPopulacao*taxaGeracao/100)][tamIndividuo+2];
+
+void roleta(){
+	
+	std::default_random_engine generator;
+std::uniform_int_distribution<int> distribution(1,6);
+int dice_roll = distribution(generator);  // generates number in the range 1..6 
+
+	
+
+}
+
+
+void crossover(){
+	int i = 0;
+	while (i < nGeracoes){
+		
+		i++;
+		
+
 
 
 void aptidao(){
