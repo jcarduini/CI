@@ -18,26 +18,28 @@
  * linhas: população inicial + seus filhos
  * colunas: tamIndividuo + função de aptidão + função de aptidão acumulada
  **/
-int populacao[tamPopulacao+(tamPopulacao*taxaGeracao/100)][tamIndividuo+2];
+int populacao[tamPopulacao+(tamPopulacao*taxaCross/100)][tamIndividuo+2];
 
-void roleta(){
-	
-	std::default_random_engine generator;
-std::uniform_int_distribution<int> distribution(1,6);
-int dice_roll = distribution(generator);  // generates number in the range 1..6 
-
-	
-
+void torneio(){
+	int i, sorteio, melhor = rand() % tamPopulacao;
+	std::cout<<"\nSorteio 1: "<<populacao[melhor][tamIndividuo];
+	for (i = 1; i < tour; i++)	{
+		sorteio = rand() % tamPopulacao;
+		std::cout<<"\nSorteio "<<i+1<<": "<<populacao[sorteio][tamIndividuo];
+		if (populacao[melhor][tamIndividuo] < populacao[sorteio][tamIndividuo])
+			melhor = sorteio;
+	}
+	std::cout<<"\nMELHOR: "<<populacao[melhor][tamIndividuo];
 }
 
-
+/*
 void crossover(){
 	int i = 0;
 	while (i < nGeracoes){
 		
 		i++;
 		
-
+*/
 
 
 void aptidao(){
@@ -79,4 +81,5 @@ main(){
   geraPopulacao();
 	aptidao();
 	imprimePopulacao();
+	torneio();
 }
