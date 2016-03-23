@@ -20,7 +20,7 @@
  **/
 int populacao[tamPopulacao+(tamPopulacao*taxaCross/100)][tamIndividuo+2];
 
-void torneio(){
+int torneio(){
 	int i, sorteio, melhor = rand() % tamPopulacao;
 	std::cout<<"\nSorteio 1: "<<populacao[melhor][tamIndividuo];
 	for (i = 1; i < tour; i++)	{
@@ -30,6 +30,7 @@ void torneio(){
 			melhor = sorteio;
 	}
 	std::cout<<"\nMELHOR: "<<populacao[melhor][tamIndividuo];
+	return melhor;
 }
 
 /*
