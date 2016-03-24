@@ -22,25 +22,32 @@ int populacao[tamPopulacao+(tamPopulacao*taxaCross/100)][tamIndividuo+2];
 
 int torneio(){
 	int i, sorteio, melhor = rand() % tamPopulacao;
-	std::cout<<"\nSorteio 1: "<<populacao[melhor][tamIndividuo];
+	std::cout<<"Sorteio 1 individuo "<<melhor<<" = "<<populacao[melhor][tamIndividuo]<<"\n";
 	for (i = 1; i < tour; i++)	{
 		sorteio = rand() % tamPopulacao;
-		std::cout<<"\nSorteio "<<i+1<<": "<<populacao[sorteio][tamIndividuo];
+		std::cout<<"Sorteio "<<i+1<<" individuo "<<sorteio<<" = "<<populacao[sorteio][tamIndividuo]<<"\n";
 		if (populacao[melhor][tamIndividuo] < populacao[sorteio][tamIndividuo])
 			melhor = sorteio;
 	}
-	std::cout<<"\nMELHOR: "<<populacao[melhor][tamIndividuo];
+	std::cout<<"MELHOR individuo: "<<melhor<<" = "<<populacao[melhor][tamIndividuo]<<"\n";
 	return melhor;
 }
 
-/*
-void crossover(){
+
+void crossoverCiclico(){
 	int i = 0;
-	while (i < nGeracoes){
-		
+	int ponto = rand() % tamIndividuo;
+	while (i < taxaCross/2){
+		std::cout<<"Pai 1: \n";
+		int pai1 = torneio();
+		std::cout<<"Pai 2: \n";
+		int pai2 = torneio();
 		i++;
+
 		
-*/
+	}
+}	
+
 
 
 void aptidao(){
@@ -82,5 +89,5 @@ main(){
   geraPopulacao();
 	aptidao();
 	imprimePopulacao();
-	torneio();
+	crossoverCiclico();
 }
