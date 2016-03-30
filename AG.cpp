@@ -5,6 +5,7 @@
 
 #define tamIndividuo 10	// solução
 #define tamPopulacao 100// quantidade de indivíduos
+#define nExecucao 100 	//quantidade de vezes que o AG irá rodar
 #define nGeracao 50 	// nnumero de vezes que haverá uma nova geracao
 #define taxaCross 60	// porcentagem de filhos gerados (em relação a população)
 #define taxaMutacao 5	// porcentagem de filhos mutantes (em relação aos filhos)
@@ -35,16 +36,15 @@ int torneio(){
 
 
 void crossoverCiclico(){
-	int i = 0;
-	int ponto = rand() % tamIndividuo;
-	while (i < taxaCross/2){
+	int i, pai1, pai2, ponto;
+	for (i = 0; i < taxaCross/2; i++){
 		std::cout<<"Pai 1: \n";
-		int pai1 = torneio();
+		pai1 = torneio();
 		std::cout<<"Pai 2: \n";
-		int pai2 = torneio();
-		i++;
-
-		
+		pai2 = torneio();
+		ponto = rand() % tamIndividuo;
+		/* filho1 */
+		populacao[tamPopulacao + i][ponto] = populacao[pai2][ponto];
 	}
 }	
 
@@ -84,10 +84,19 @@ void geraPopulacao(){
 	}
 }
 
-main(){
-  srand((unsigned)time(NULL));  
-  geraPopulacao();
+int agSendMore(){
+	srand((unsigned)time(NULL));  
+	geraPopulacao();
 	aptidao();
 	imprimePopulacao();
 	crossoverCiclico();
+	return 0;
+}
+
+main(){
+	int i, sucesso = 0;
+	for (i = 0; i <nExecucao; i++)
+		if (agSendMore())
+			sucesso =+1;
+
 }
