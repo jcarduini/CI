@@ -13,7 +13,7 @@
 #include<iostream> 	// std::cout
 #include<algorithm>	// std::shuffle, sts::copy
 #include<cmath> 	// std::pow, std::abs
-
+#include<ctime> 	// std::time_t
 /** matriz de população 
 * linhas: população inicial + seus filhos
 * colunas: tamIndividuo + função de aptidão + função de aptidão acumulada
@@ -28,9 +28,9 @@ void quicksort(int esq, int dir){
 	int aux[tamIndividuo+2];	
 		
 	while(i <= j){
-		while (populacao[i][tamIndividuo] > pivo &&  i < dir) 
+		while (populacao[i][tamIndividuo] < pivo &&  i < dir) 
 			i++;
-		while (populacao[j][tamIndividuo] < pivo && j > esq) 
+		while (populacao[j][tamIndividuo] > pivo && j > esq) 
 			j--;
 		if (i <= j){
 			std::copy(populacao[i], populacao[i] + tamIndividuo + 2, aux);
@@ -76,7 +76,7 @@ int imprimeIndividuo(int indice){
 	std::cout<<"Individuo "<<indice<<": ";
 	for (i = 0; i < tamIndividuo; i++)
 	  std::cout<<populacao[indice][i];
-	std::cout<<" Apt.: "<<populacao[indice][tamIndividuo];
+	std::cout<<" Apt.: "<<populacao[indice][tamIndividuo]<<" - ac.: "<<populacao[indice][tamIndividuo+1] ;
 	std::cout<<"\n";
 }
 
@@ -110,7 +110,7 @@ int torneio(int tour){
 	int i, sorteio, melhor = random(tamPopulacao);
 	for (i = 1; i < tour; i++)	{
 		sorteio = random(tamPopulacao);
-		if (populacao[melhor][tamIndividuo] < populacao[sorteio][tamIndividuo])
+		if (populacao[melhor][tamIndividuo] > populacao[sorteio][tamIndividuo])
 			melhor = sorteio;
 	}
 	return melhor;
@@ -118,9 +118,11 @@ int torneio(int tour){
   	
 int roleta(int ac){
   int sort = random(ac);
+//	std::cout<<"Sor: "<<sort<<'\n';
   int i = 0;
-  while(populacao[i][tamIndividuo] < sort)
-    i++;
+  while(populacao[i][tamIndividuo +1] < sort){
+//	imprimeIndividuo(i);
+    i++;}
   return i;
 }
 
@@ -138,12 +140,12 @@ int aptAc(int li, int ls){
 /* calcula a aptidão para a função send + more = money */
 void sendMore(int li){
 
-	populacao[li][tamIndividuo] = (std::pow(10,5) - abs((
+	populacao[li][tamIndividuo] = abs((
 (populacao[li][0]+populacao[li][4])*(std::pow(10,3)) +
 (populacao[li][1]+populacao[li][5])*(std::pow(10,2)) +
 (populacao[li][2]+populacao[li][6])*10 + populacao[li][3]+populacao[li][1] ) -
 (populacao[li][4]*(std::pow(10,4)) + populacao[li][5]*(std::pow(10,3)) +
-populacao[li][2]*(pow(10,2)) + populacao[li][1]*10 + populacao[li][7])));
+populacao[li][2]*(pow(10,2)) + populacao[li][1]*10 + populacao[li][7]));
 
 }
 
@@ -164,11 +166,11 @@ void geraFilhos(int ac)
   int filho, pai1, pai2, ponto;
   for (filho = tamPopulacao; filho < tamPopulacao + taxaCross; filho +=2)
   {
-//    pai1 = roleta(ac);
-//    pai2 = roleta(ac);
+    pai1 = roleta(ac);
+    pai2 = roleta(ac);
    
-	pai1 = torneio(3);
-	pai2 = torneio(3);
+//	pai1 = torneio(2);
+//	pai2 = torneio(2);
     copiaPai(pai1, filho);
     copiaPai(pai2, filho+1);
     int ponto = random(tamIndividuo);
@@ -206,11 +208,11 @@ int agSendMore(){
 	/* Gera população inicial */
   	geraPopulacao();
 	/* Calcula aptidão da primeira geração */
-	acumulo = aptidao(0, tamPopulacao);
+	aptidao(0, tamPopulacao );
 	/* Gera n gerações */
 	for (i = 0; i < nGeracao; i++){
 		/* Calcula aptidão acumulada dos pais */
-		aptAc(0,tamPopulacao);
+		acumulo = aptAc(0,tamPopulacao);
 		/* Gera descendentes */		
 		geraFilhos(acumulo);
 		/* Calcula aptidão dos descendentes */
@@ -220,16 +222,22 @@ int agSendMore(){
 //		imprimePopulacao(tamPopulacao + taxaCross);
 		/* reseta aptidao acumulada */	
 	}
-	if (populacao[0][tamIndividuo] == std::pow(10,5))
+	if (populacao[0][tamIndividuo] == 0)
 		return 1;
 	return 0;
 }
 
 int main(){
 	int i, sucesso = 0;
-	for (i = 0; i <nExecucao; i++)
-		if (agSendMore())
+	std::time_t inicio = std::time(0);
+	for (i = 0; i <nExecucao; i++){
+		if (agSendMore()){
 			sucesso += 1;
+			}
+//			imprimeIndividuo(0);
+		}
+	std::time_t fim = std::time(0);
 	std::cout<<"Convergencia = "<<sucesso<<'\n';
+	std::cout<<"Tempo decorrido: "<<difftime(fim, inicio)<<" segundos\n";
 	return sucesso;
 }
