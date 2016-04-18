@@ -13,16 +13,20 @@
 #include<iostream> 	// std::cout
 #include<algorithm>	// std::shuffle, sts::copy
 #include<cmath> 	// std::pow, std::abs
+#include<vector> 	// std::vector
 
 /** matriz de população 
 * linhas: população inicial + seus filhos
 * colunas: tamIndividuo + função de aptidão + função de aptidão acumulada
 **/
+
+
 int populacao[tamPopulacao+taxaCross][tamIndividuo+2];
 
 int random( int ls){
-  return (ls * (long int) rand()/RAND_MAX);
+	return (ls * (long int) rand()/RAND_MAX);
 }
+
 
 int comparaIndividuos(int* novo, int lim){
   int i, j;
@@ -34,13 +38,13 @@ int comparaIndividuos(int* novo, int lim){
 }
 
 void imprimePopulacao(int ls){
-  int i, j;
-  for (i = 0; i < ls; i++){
-    std::cout<<"Individuo "<<i<<": ";
-    for (j = 0; j < tamIndividuo; j++)
-      std::cout<<populacao[i][j];	
-    std::cout<<"| "<<populacao[i][tamIndividuo]<<" | Ac.: "<<populacao[i][tamIndividuo+1]<<"\n";
-  }
+	int i, j;
+	for (i = 0; i < ls; i++){
+		std::cout<<"Individuo "<<i<<": ";
+		for (j = 0; j < tamIndividuo; j++)
+			std::cout<<populacao[i][j];	
+		std::cout<<"| "<<populacao[i][tamIndividuo]<<" | Ac.: "<<populacao[i][tamIndividuo+1]<<"\n";
+	}
 }
 
 int imprimeIndividuo(int indice){
@@ -54,7 +58,8 @@ int imprimeIndividuo(int indice){
 
 void quicksort(int esq, int dir){
 	int pivo = populacao[(dir + esq)/2][tamIndividuo];
-	int i = esq;
+
+	int	i = esq;
 	int j = dir;
 	int aux[tamIndividuo+2];	
 		
@@ -84,73 +89,68 @@ void mutacao(int ind){
 	populacao[ind][ponto1] = populacao[ind][ponto2];
 	populacao[ind][ponto2] = aux;
 }
+
 int roleta(){
-  int sort = random(populacao[tamPopulacao + taxaCross][tamIndividuo]);
+  int sort = random(populacao[tamPopulacao - 1][tamIndividuo]);
   int i = 0;
   while(populacao[i][tamIndividuo] <  sort)
     i++;
+  return i;
 }
 
 int torneio(int tour){
 	int i, sorteio, melhor = rand() % tamPopulacao;
+//	std::cout<<"Sorteio 1 individuo "<<melhor<<" = "<<populacao[melhor][tamIndividuo]<<"\n";
 	for (i = 1; i < tour; i++)	{
 		sorteio = rand() % tamPopulacao;
+//		std::cout<<"Sorteio "<<i+1<<" individuo "<<sorteio<<" = "<<populacao[sorteio][tamIndividuo]<<"\n";
 		if (populacao[melhor][tamIndividuo] < populacao[sorteio][tamIndividuo])
 			melhor = sorteio;
 	}
+//	imprimeIndividuo(melhor);
 	return melhor;
 }
 
 void copiaPai(int pai, int filho){
+//	std::cout<<"Copiando pai "<<pai<<" para filho "<<filho<<'\n';
 	int i;
 	for (i = 0; i < tamIndividuo; i++)
 		populacao[filho][i] = populacao[pai][i];
 }
 
 int crossoverCiclico(int pai1, int pai2, int filho, int ponto){
+ 
 	int i;
 	populacao[filho][ponto]=populacao[pai2][ponto];
+//	imprimeIndividuo(filho);
 	populacao[filho+1][ponto]=populacao[pai1][ponto];
-	for (i = 0; i < tamIndividuo; i++)	
-		if (i != ponto && populacao[filho][ponto] == populacao[filho][i])
-			crossoverCiclico(pai1,pai2,filho,i);
+//	imprimeIndividuo(filho+1);
+	for (i = 0; i < tamIndividuo; i++)
+	  if (i != ponto && populacao[filho][ponto] == populacao[filho][i])
+	    crossoverCiclico(pai1,pai2,filho,i);
 	return 0;
 }	
 
-void geraFilhos(int sel, int cross)
+void geraFilhos()
 {
-
+  std::cout<<"Gera filhos\n";
   int filho, pai1, pai2, ponto;
   for (filho = tamPopulacao; filho < tamPopulacao + taxaCross; filho +=2)
   {
-
-    switch(sel){
-      case 1:
-        pai1 = roleta();
-        pai2 = roleta();
-        break;
-      case 2: 
-        pai1 = torneio(3);
-        pai2 = torneio(3);
-        break;
-      case 3: 
-        pai1 = torneio(2);
-        pai2 = torneio(2);
-        break;
-    }
+ /*   pai1 = roleta();
+    pai2 = roleta();
+   */    
+pai1 = torneio(3);
+pai2 = torneio(3);
     copiaPai(pai1, filho);
     copiaPai(pai2, filho+1);
     int ponto = random(tamIndividuo);
-    switch(cross){
-      case 1:
-        crossoverCiclico(pai1, pai2, filho, ponto);
-        break;
-    }
-    if (random(100) < 10)
-      mutacao(filho);
-    if (random(100) < 10)
-       mutacao(filho+1); 
-    }
+	crossoverCiclico(pai1, pai2, filho, ponto);
+	if (random(100) < 10)
+		mutacao(filho);
+	if (random(100) < 10)
+		mutacao(filho+1); 
+	}
 }
 
 /* calcula a aptidão para a função send + more = money */
@@ -166,11 +166,12 @@ populacao[li][2]*(pow(10,2)) + populacao[li][1]*10 + populacao[li][7])));
 
 }
 
-void aptidaoSM(int li, int ls){
-  //std::cout<<"Funcao de aptidão: \n";	
+void aptidao(int li, int ls){
+  std::cout<<"aptidao\n";
   while (li < ls){
     /* calcula valor de aptidão do individuo */
     sendMore(li);
+
     /* seta aptidao acumulada dos individuos posteriores ao primeiro */
     if (li != 0)
       populacao[li][tamIndividuo + 1] += populacao[li-1][tamIndividuo+1];
@@ -181,67 +182,41 @@ void aptidaoSM(int li, int ls){
 void geraPopulacao(){
   int vetor[10] = {0,1,2,3,4,5,6,7,8,9}, i = 0, j, k;
   std::cout<<"Gerando população...\n";
+  
+  /* Insere o primeiro individuo */
   std::random_shuffle(vetor, vetor+10);		// mistura os elementos de vetor
   for (j = 0; j < 10; j++)
         populacao[i][j]=vetor[j];		// coloca vetor na populacao
    i++;   
+  
   while (i < tamPopulacao){
-    std::random_shuffle(vetor, vetor+10);		// mistura os elementos de vetor
+    std::random_shuffle(vetor, vetor+10); 	// mistura os elementos de vetor
     if (comparaIndividuos(vetor, i) == -1){	// verifica repetições
       for (j = 0; j < 10; j++)
-        populacao[i][j]=vetor[j];		// coloca vetor na populacao
+        populacao[i][j]=vetor[j];	// coloca vetor na populacao
       i++;
     }
   }
 }
 
-void controle(int prob, int sel, int cross, int rein){     
-  switch(prob){
-    case 1: aptidaoSM(0,tamPopulacao);
-  break;
-  }  
-  
-  int i = 0;
-  while (i < nGeracao){
-    std::cout<<"Geracao "<<i<<'\n';
-    geraFilhos(sel, cross);
-    aptidaoSM(tamPopulacao, tamPopulacao + taxaCross);  
-    switch(rein){
-      case 1:
-        quicksort(0, tamPopulacao + taxaCross - 1);
-        break;
-      case 2: 
-        
-        break;
-    }    
-    imprimePopulacao(tamPopulacao + taxaCross);
-    i++;
-  }
-}
-
-int ag(int prob, int sel, int cross, int rein){
+int agSendMore(){
   srand((unsigned)time(NULL));  
   geraPopulacao();
-  controle(prob, sel, cross, rein);  
-  if (populacao[0][tamIndividuo] == 0) //encontrou solução!
-    return 1;
-  return 0;
+  aptidao(0, tamPopulacao);
+  geraFilhos();
+//  aptidao(tamPopulacao, tamPopulacao + taxaCross);
+  	
+  quicksort(0, tamPopulacao - 1);
+  imprimePopulacao(tamPopulacao + taxaCross);	
+//	quicksort(0, tamPopulacao + taxaCross - 1);
+//	imprimePopulacao(tamPopulacao + taxaCross);
+	return 0;
 }
 
 int main(){
-  int i, sucesso = 0;
-  int prob, sel, cross, rein;
-  std::cout<<"Qual problema deseja resolver? \n1. SEND + MORE = MONEY\n";
-  std::cin>>prob;
-  std::cout<<"Qual método de seleção? \n1. Roleta \n2. Torneio de tamanho 3 \n3. Torneio de tamanho 2\n";
-  std::cin>>sel;
-  std::cout<<"Qual tipo de crossover? \n1. Crossover cíclico \n";
-  std::cin>>cross;
-  std::cout<<"Qual método de reinserção? \n1. Reinserção ordenada \n";
-  std::cin>>rein;
-  for (i = 0; i <nExecucao; i++)
-    if (ag(prob, sel, cross, rein))
-      sucesso +=1;
-  std::cout<<"Número de convergência: "<<sucesso;
-    return sucesso;
+	int i, sucesso = 0;
+	for (i = 0; i <nExecucao; i++)
+		if (agSendMore())
+			sucesso +=1;
+	return sucesso;
 }

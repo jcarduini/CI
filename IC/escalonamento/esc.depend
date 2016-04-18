@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1449058889 source:c:\users\dcida_000\desktop\ic\escalonamento\esc\main.c
+	"declaracao.h"
+
+1449058804 c:\users\dcida_000\desktop\ic\escalonamento\esc\declaracao.h
+	<stdio.h>
+	<stdlib.h>
+	"estrutura.h"
+	<time.h>
+	<math.h>
+	<string.h>
+
+1449058804 c:\users\dcida_000\desktop\ic\escalonamento\esc\estrutura.h
+

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1449640938 source:c:\users\dcida_000\desktop\ic\escalonamento\perceptron3\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+
