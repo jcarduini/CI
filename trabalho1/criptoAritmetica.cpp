@@ -234,7 +234,7 @@ int main(){
 		if (agSendMore()){
 			sucesso += 1;
 			}
-//			imprimeIndividuo(0);
+			imprimeIndividuo(0);
 		}
 	std::time_t fim = std::time(0);
 	std::cout<<"Convergencia = "<<sucesso<<'\n';
