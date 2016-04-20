@@ -1,10 +1,17 @@
 /** INSTRUÇÕES PARA COMPILAR E EXECUTAR AG.cpp:
-* g++ -o AG AG.cpp
+* g++ -o p2 p2.cpp
 * ./AG
 **/
 
+/*
+ * min = eat
+ * sub = that
+ * dif = apple
+   */
+
+
 #define tamIndividuo 10	// solução
-#define tamPopulacao 100	// quantidade de indivíduos
+#define tamPopulacao 100// quantidade de indivíduos
 #define nExecucao 1000 	// quantidade de vezes que o AG irá rodar
 #define nGeracao 50	// numero de vezes que haverá uma nova geracao
 #define taxaCross 60	// porcentagem de filhos gerados (em relação a população)
@@ -25,7 +32,7 @@ int populacao[tamPopulacao+taxaCross][tamIndividuo+2];
 void quicksort(int esq, int dir){
 	int pivo = populacao[(dir + esq)/2][tamIndividuo];
 
-	int	i = esq;
+	int i = esq;
 	int j = dir;
 	int aux[tamIndividuo+2];	
 		
@@ -151,17 +158,16 @@ populacao[li][2]*(pow(10,2)) + populacao[li][1]*10 + populacao[li][7]));
 
 }
 
-void dec(std::vector<int> pal){
-		int res = 0;
-	for (int it = std::begin(pal); it != std::end(pal); it++)
+int dec(std::vector<int> pal){
+	int res = 0;
+	int it;
+	for (it = 0; it < pal.size(); it++)
 		res += (pal[it]*pow(10,it)); 
 	return res;
 }
 
-void funcaoAptidao(std::vector<int> min, std::vector<int> sub, std::vector<int> dif){
-		
-
-
+int funcaoAptidao(std::vector<int> min, std::vector<int> sub, std::vector<int> dif){
+	return abs((dec(min) - dec(sub)) - dec(dif));
 }
 
 int aptidao(int li, int ls){
@@ -219,7 +225,7 @@ void geraPopulacao(){
  	
 int agSendMore(){
 	int i, acumulo;
-	srand((unsigned)time(NULL));  
+	srand((unsigned)time(0));  
 	/* Gera população inicial */
   	geraPopulacao();
 	/* Calcula aptidão da primeira geração */
@@ -249,7 +255,7 @@ int main(){
 		if (agSendMore()){
 			sucesso += 1;
 			}
-//			imprimeIndividuo(0);
+			imprimeIndividuo(0);
 		}
 	std::time_t fim = std::time(0);
 	std::cout<<"Convergencia = "<<sucesso<<'\n';
