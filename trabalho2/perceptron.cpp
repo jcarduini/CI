@@ -174,9 +174,8 @@ int padrao[6][6][5] ={{
 
 /* Parâmetros fixos para problema 1 */
 
-int padroes = 2;
+int padroes;
 int neuronios = 2;
-int epocas;
 int bias = 1;
 int linhas = 6;
 int colunas = 5;
@@ -187,21 +186,34 @@ int colunas = 5;
 double w[2] [31]={
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
-int pesos = 1; /* Pesos zerados */
-//int pesos = 2; /* Pesos aleatorios */
+//int pesos = 1; /* Pesos zerados */
+int pesos; /* Pesos aleatorios */
 int taxa = 1;
-int exercicio = 1;
-int ft[2] = {0,1};
+int exercicio;
+int ft[2][2] ={{1,0},{0,1}};
 
 /* Funções */
 
+void menu(){
+
+	std::cout<<"Executar qual exercício?\n";
+	std::cin>>exercicio;
+//	std::cout<<"Taxa de aprendizagem: ";
+//	std::cin>>taxa;
+	std::cout<<"Pesos iniciais: \n1- Zerados\n2- Aleatórios\nOpção: "; 
+	std::cin>>pesos;
+}
+
+
 /* Imprime os pesos */
-void printPesos(double w[]){
-	int i;
+void printPesos(){
+	int i, j;
 	std::cout<<"Pesos: ";
-	for (i = 0; i< 31; i++)
-		std::cout<<w[i]<<' ';
-	std::cout<<'\n';
+	for (j = 0; j < neuronios; j++){
+		for (i = 0; i< 31; i++)
+			std::cout<<w[j][i]<<' ';
+		std::cout<<'\n';
+	}
 }
 
 /* Imprime um padrão */
@@ -226,17 +238,6 @@ double fRand(double min, double max)
 {
 	double f = (double)rand() / RAND_MAX;
 	return floor( min + f * (max - min)*10)/10;
-}
-
-
-void menu(){
-
-	std::cout<<"Executar qual exercício?\n";
-	std::cin>>exercicio;
-	std::cout<<"Taxa de aprendizagem: ";
-	std::cin>>taxa;
-	std::cout<<"Pesos iniciais: \n1- Zerados\n2- Aleatórios\nOpção: "; 
-	std::cin>>pesos;
 }
 
 /* Função soma 
@@ -284,12 +285,9 @@ void ajuste(int p[][5], int erro, double w[]){
 }
 	
 
-/* Faz treinamento com entradas 0 e 1 
- * Exercício 1
- */
-int treinamento(int epocas, double w[]){
+int neuronio(int ft[], double w[]){
 
-	int i, erro;
+	int i, erro, interacoes = 0;
 	bool ajusta;
 	do{
 		ajusta = false;
@@ -300,47 +298,129 @@ int treinamento(int epocas, double w[]){
 				ajuste(padrao[i], erro, w);
 			}	
 		}
-		epocas++;
+		interacoes++;
 	}while(ajusta); 
+	return interacoes;
+}
 
+
+/* Faz treinamento com entradas 0 e 1 
+ * Exercício 1, 2*/
+ int treinamento(){
+	
+	int i = 0, epocas = 0;
+	bool ajusta;
+	while(i < neuronios){
+		epocas += neuronio(ft[i], w[i]);
+		i++;
+		}
 	return epocas;
 }
 
-void controle(int epocas){
+/* Testa padrões de 2 a 6 
+	FIXME
+*/
+void testaPadroes(){
 
-	switch(pesos){
-		case 1:			// pesos zerados
-			break;
-		case 2: 		// pesos aleatórios de -1 a 1
-			int i;
-			double aleatorio;
-			for (i = 0; i < 31; i++){
-				aleatorio =  fRand(-1,1);
-				w[0][i] = aleatorio;
-			}	
-			printPesos(w[0]);
-			break;
-		
-		}
+	int i, j = 0, y1, y2;
+	for (i = 2 ; i < 6; i++){
+		std::cout<<"Padrao "<<i<<": ";
+		y1 = soma(padrao[i], w[j]);	
+		switch(exercicio){
+			case 1:
+					std::cout<<y1<<'\n';
+				break;
+			case 2:
+				y2 = soma(distorcidos[i],w[j+1]);			
+				if(y1 == 1){
+					if (y2 == 0)
+						std::cout<<"'0'\n";
+					else
+						std::cout<<"Padrão não foi reconhecido\n";
+				}
+				else{
+					if (y2 == 1)
+						std::cout<<"'1'\n";
+					else
+						std::cout<<"Padrão não foi reconhecido\n";
+				}
+				break;
+			}
+	}
+}
+
+/* Testa padrões distorcidos 
+	FIXME 
+*/
+void testaDistorcidos(){
+	int i, j = 0, y1, y2;
+	std::cout<<"Dez padrões distorcidos de '0', dez padrões distorcidos de '1'para cada neurônio \n";
+	for (i = 0; i < 20; i++){
+		std::cout<<"Distorcido "<<i<<": ";
+		y1 = soma(distorcidos[i],w[j]); 
 	switch(exercicio){
 		case 1:
-			int i;
 		
-			std::cout<<"Epocas: "<<treinamento(epocas, w[0])<<'\n';
-			printPesos(w[0]);
-			std::cout<<"Dez padrões distorcidos de '0', dez padrões distorcidos de '1'\n";
-			for (i = 0; i < 20; i++){
-				printPadrao(distorcidos[i]);				
-				std::cout<<"Padrão distorcido "<<i<<":	"<<soma(distorcidos[i],w[0])<<'\n';
-			}		
-			for (i =2 ; i < 6; i++){
-				printPadrao(padrao[i]);
-				std::cout<<soma(padrao[i], w[0])<<"\n";
-			}				
+				std::cout<<y1<<'\n';
+			break;
+		case 2:
+			y2 = soma(distorcidos[i],w[j+1]);			
+			if(y1 == 1){
+				if (y2 == 0)
+					std::cout<<"'0'\n";
+				else
+					std::cout<<"Padrão não foi reconhecido\n";
+			}
+			else{
+				if (y2 == 1)
+					std::cout<<"'1'\n";
+				else
+					std::cout<<"Padrão não foi reconhecido\n";
+			}
+			break;
+		}
+	}
+}
+
+void controle(){
+
+	switch(exercicio){
+		case 1:
+			padroes = 2;
+			neuronios = 1;
+			break;
+		case 2: 
+			padroes = 2;
+			neuronios = 2;
+			break;
+	}
+	switch(pesos){
+		case 1:			// pesos zerados
+//			printPesos();
+			break;
+		case 2: 		// pesos aleatórios de -1 a 1
+			int i, j;
+			for(j = 0; j < neuronios; j++)
+				for (i = 0; i < 31; i++)
+					w[j][i] = fRand(-1,1);
+			printPesos();
+			break;
+		}
+
+	switch(exercicio){
+		case 1:
+			int i;	
+			std::cout<<"Epocas: "<<neuronio(ft[1], w[0])<<'\n'; /* letra a */
+			printPesos();			/* letra b */
+			testaDistorcidos();		/* letra c */
+			testaPadroes(); 		/* letra d */
 			break;
 
 		case 2:
-			
+			std::cout<<"Epocas: "<<treinamento()<<'\n'; /* letra a */	
+			printPesos();			/* letra b */
+			testaDistorcidos();		/* letra c */
+			testaPadroes(); 		/* letra d */
 			break;
 		}	
 	}
@@ -349,7 +429,6 @@ int main(){
 
 	unsigned int time_ui = static_cast<unsigned int>( time(NULL)%1000 );
 	srand( time_ui );
-	int epocas = 0;
-//	menu();
-	controle(epocas);
+	menu();
+	controle();
 }
