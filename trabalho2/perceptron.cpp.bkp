@@ -300,7 +300,6 @@ std::cout<<"Começando o neuronio\n";
 	do{
 		ajusta = false;
 		for (i = 0; i < padroes; i++){
-			std::cout<<"padroes: "<<i<<'\n';
 			erro = ft[i] - soma(padrao[i], w);
 			if (erro != 0){	
 				ajusta = true;
@@ -315,8 +314,8 @@ std::cout<<"Começando o neuronio\n";
 
 /* Faz treinamento com entradas 0 e 1 
  * Exercício 1, 2, 3*/
-int treinamento(){
-	std::cout<<"Começando o treinamento "<<neuronios<<" \n";	
+ int treinamento(){
+std::cout<<"Começando o treinamento\n";	
 	int i = 0, epocas = 0;
 	bool ajusta;
 	while(i < neuronios){
