@@ -1,5 +1,6 @@
-#include <iostream> //std::cout
-#include <vector>
+#include<iostream> //std::cout
+#include<vector>
+//#include<stdlib.h> //rand()
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -89,42 +90,42 @@ int distorcidos[20][6][5]= {{
 	{0,0,1,0,0},
 	{0,0,1,0,0},
 	{1,1,1,1,1}}, {	
-		{0,0,1,0,0},
+		{0,0,1,1,0},
 		{0,1,1,0,0},
 		{0,0,0,0,0},
 		{0,0,0,0,0},
 		{0,0,1,0,0},
-		{1,1,1,1,1}}, {
+		{1,0,0,0,1}}, {
 	{0,1,1,1,0},
-	{0,1,1,0,0},
-	{0,0,1,0,0},
-	{0,0,1,0,0},
-	{0,0,1,0,0},
+	{0,1,1,0,1},
+	{0,0,1,0,1},
+	{0,0,1,0,1},
+	{0,0,1,0,1},
 	{1,1,1,1,1}}, {
+		{0,0,1,0,1},
 		{0,0,1,0,0},
-		{0,0,1,0,0},
-		{0,0,1,0,0},
-		{0,0,0,0,0},
+		{1,0,1,0,0},
+		{0,0,0,0,1},
 		{0,0,1,0,0},
 		{1,1,1,1,0}}, {
 	{0,0,1,1,0},
 	{0,1,1,0,0},
 	{1,0,1,0,0},
+	{1,0,1,1,0},
 	{0,0,1,0,0},
-	{0,0,1,0,0},
-	{0,1,1,1,1}}, {
+	{0,1,1,0,1}}, {
 		{0,0,1,0,0},
-		{0,0,1,0,0},
+		{0,0,1,1,0},
+		{0,0,0,1,0},
 		{0,0,0,0,0},
-		{0,0,0,0,0},
 		{0,0,1,0,0},
-		{1,1,1,1,1}}, {
+		{1,1,0,1,1}}, {
 	{0,1,1,1,0},
 	{0,1,1,0,0},
 	{0,0,1,0,0},
 	{0,0,1,0,0},
-	{0,0,1,0,0},
-	{0,1,1,1,0}}};
+	{0,0,0,0,0},
+	{0,1,0,1,0}}};
 
 int padrao[6][6][5] ={{
 		{0,1,1,1,0},
@@ -163,7 +164,7 @@ int padrao[6][6][5] ={{
 	{0,0,0,1,0}
 	},{
 	{0,1,1,1,1},
-	{0,1,0,0,0},
+	{0,0,0,0,1},
 	{0,1,1,1,1},
 	{0,0,0,0,1},
 	{0,0,0,0,1},
@@ -291,38 +292,36 @@ void ajuste(int p[][5], int erro, double w[]){
 }
 	
 
-bool neuronio(int ft[], double w[]){
+int neuronio(int ft[], double w[]){
 
-//	std::cout<<"Começando o neuronio\n";	
-	int i, erro;
-	bool ajusta = false;
-	for (i = 0; i < padroes; i++){
-		std::cout<<"padroes: "<<i<<'\n';
-		erro = ft[i] - soma(padrao[i], w);
-		if (erro != 0){	
-			ajusta = true;
-			ajuste(padrao[i], erro, w);
-		}	
-	}
-	return ajuste;
+std::cout<<"Começando o neuronio\n";	
+	int i, erro, interacoes = 0;
+	bool ajusta;
+	do{
+		ajusta = false;
+		for (i = 0; i < padroes; i++){
+			erro = ft[i] - soma(padrao[i], w);
+			if (erro != 0){	
+				ajusta = true;
+				ajuste(padrao[i], erro, w);
+			}	
+		}
+		interacoes++;
+	}while(ajusta); 
+	return interacoes;
 }
 
 
 /* Faz treinamento com entradas 0 e 1 
  * Exercício 1, 2, 3*/
-int treinamento(){
-	std::cout<<"Começando o treinamento com "<<neuronios<<" neuronios \n";	
+ int treinamento(){
+std::cout<<"Começando o treinamento\n";	
 	int i = 0, epocas = 0;
 	bool ajusta;
-	/* Para cada neurônio */
-	do{
-		while(i < neuronios){
-			ajusta = neuronio(ft[i], w[i]);
-			i++;
-			}
-	epocas++;	
-	}while(ajusta);
-	
+	while(i < neuronios){
+		epocas += neuronio(ft[i], w[i]);
+		i++;
+		}
 	return epocas;
 }
 
@@ -337,7 +336,7 @@ void testaPadroes(){
 		y1 = soma(padrao[i], w[j]);	
 		switch(exercicio){
 			case 1:
-				std::cout<<y1<<'\n';
+					std::cout<<y1<<'\n';
 				break;
 			case 2:
 				y2 = soma(distorcidos[i],w[j+1]);			
@@ -369,7 +368,7 @@ void testaDistorcidos(){
 		y1 = soma(distorcidos[i],w[j]); 
 	switch(exercicio){
 		case 1:		
-				std::cout<<y1<<'\n';
+			std::cout<<y1<<'\n';
 			break;
 		case 2:
 			y2 = soma(distorcidos[i],w[j+1]);			
@@ -422,7 +421,7 @@ void controle(){
 	switch(exercicio){
 		case 1:
 			int i;	
-			std::cout<<"Epocas: "<<treinamento()<<'\n'; /* letra a */
+			std::cout<<"Epocas: "<<neuronio(ft[1], w[0])<<'\n'; /* letra a */
 			printPesos();			/* letra b */
 			testaDistorcidos();		/* letra c */
 			testaPadroes(); 		/* letra d */
@@ -436,9 +435,9 @@ void controle(){
 			break;
 
 		case 3:
-//			printPesos();
-//			std::cout<<"Epocas: "<<treinamento()<<'\n'; /* letra a */
-//			printPesos();
+			printPesos();
+			std::cout<<"Epocas: "<<treinamento()<<'\n'; /* letra a */
+			printPesos();
 			
 			break;
 		}	

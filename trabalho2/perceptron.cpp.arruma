@@ -293,7 +293,7 @@ void ajuste(int p[][5], int erro, double w[]){
 
 bool neuronio(int ft[], double w[]){
 
-//	std::cout<<"Começando o neuronio\n";	
+	std::cout<<"Começando o neuronio\n";	
 	int i, erro;
 	bool ajusta = false;
 	for (i = 0; i < padroes; i++){
@@ -311,7 +311,7 @@ bool neuronio(int ft[], double w[]){
 /* Faz treinamento com entradas 0 e 1 
  * Exercício 1, 2, 3*/
 int treinamento(){
-	std::cout<<"Começando o treinamento com "<<neuronios<<" neuronios \n";	
+	std::cout<<"Começando o treinamento "<<neuronios<<" \n";	
 	int i = 0, epocas = 0;
 	bool ajusta;
 	/* Para cada neurônio */
@@ -422,7 +422,7 @@ void controle(){
 	switch(exercicio){
 		case 1:
 			int i;	
-			std::cout<<"Epocas: "<<treinamento()<<'\n'; /* letra a */
+			std::cout<<"Epocas: "<<neuronio(ft[1], w[0])<<'\n'; /* letra a */
 			printPesos();			/* letra b */
 			testaDistorcidos();		/* letra c */
 			testaPadroes(); 		/* letra d */
